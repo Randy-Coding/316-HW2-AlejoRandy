@@ -59,7 +59,7 @@ export default class SongCard extends React.Component {
     }
 
     render() {
-        const { song, deleteCallback } = this.props;
+        const { song, deleteSongCallback } = this.props;
         let num = this.getItemNum();
         let itemClass = "song-card unselected-song-card";
         if (this.state.draggedTo) {
@@ -93,7 +93,7 @@ export default class SongCard extends React.Component {
                 type="button"
                 className="song-card-button"
                 value="🗑"
-                onClick={() => deleteCallback(num)}
+                onClick={() => deleteSongCallback(num)}
             />
             </div>
         )

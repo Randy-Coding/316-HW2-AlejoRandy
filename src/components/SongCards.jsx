@@ -3,7 +3,7 @@ import React from "react";
 
 export default class SongCards extends React.Component {
     render() {
-        const { currentList, moveSongCallback, openEditSongModal } = this.props;
+        const { currentList, moveSongCallback, openEditSongModal, deleteSongCallback } = this.props;
         if (currentList === null) {
             return (
                 <div id="song-cards"></div>
@@ -14,13 +14,14 @@ export default class SongCards extends React.Component {
                 <div id="song-cards">
                     {
                         currentList.songs.map((song, index) => (
-                            <SongCard
-                                id={'song-card-' + (index+1)}
-                                key={'song-card-' + (index+1)}
-                                song={song}
-                                moveCallback={moveSongCallback}
-                                onDoubleClick={() => openEditSongModal(index)}
-                            />
+                        <SongCard
+                        id={'song-card-' + (index + 1)}
+                        key={'song-card-' + (index + 1)}
+                        song={song}
+                        moveCallback={moveSongCallback}
+                        onDoubleClick={() => openEditSongModal(index)}
+                        deleteSongCallback={deleteSongCallback}
+                        />
                         ))
                     }
                 </div>

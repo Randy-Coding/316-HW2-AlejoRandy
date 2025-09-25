@@ -239,6 +239,10 @@ class App extends React.Component {
         let transaction = new MoveSong_Transaction(this, start, end);
         this.tps.processTransaction(transaction);
     }
+    deleteSong = (index) => {
+    this.state.currentList.songs.splice(index - 1, 1); 
+    this.setStateWithUpdatedList(this.state.currentList);
+    }
     // THIS FUNCTION BEGINS THE PROCESS OF PERFORMING AN UNDO
     undo = () => {
         if (this.tps.hasTransactionToUndo()) {
@@ -329,9 +333,11 @@ class App extends React.Component {
                     closeCallback={this.closeCurrentList}
                 />
                 <SongCards
-                    currentList={this.state.currentList}
-                    moveSongCallback={this.addMoveSongTransaction}
-                    openEditSongModal={this.openEditSongModal} />
+                currentList={this.state.currentList}
+                moveSongCallback={this.addMoveSongTransaction}
+                openEditSongModal={this.openEditSongModal}
+                deleteSongCallback={this.deleteSong}
+                />                
                 <Statusbar 
                     currentList={this.state.currentList} />
                 <DeleteListModal
