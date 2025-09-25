@@ -184,10 +184,13 @@ input {
   color: white;
 }
 
+#delete-button {
+  margin-left: auto;
+}
 .playlist-card-button,
 .song-card-button {
-  margin-left: auto;
-  font-size:24pt;
+  font-size: 24pt;
+  margin-left: 10px; /* pushes it to the far left */
 }
 .song-card-number,
 .song-card-title,

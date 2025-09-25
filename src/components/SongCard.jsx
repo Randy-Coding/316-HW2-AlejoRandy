@@ -59,7 +59,7 @@ export default class SongCard extends React.Component {
     }
 
     render() {
-        const { song, deleteSongCallback } = this.props;
+        const { song, deleteSongCallback, cloneSongCallback } = this.props;
         let num = this.getItemNum();
         let itemClass = "song-card unselected-song-card";
         if (this.state.draggedTo) {
@@ -80,20 +80,27 @@ export default class SongCard extends React.Component {
             >
             <span className="song-card-number">{num}.</span>
             <a
-                className="song-card-title"
-                href={`https://www.youtube.com/watch?v=${song.youTubeId}`}
-                target="_blank"
-                rel="noreferrer"
+            className="song-card-title"
+            href={`https://www.youtube.com/watch?v=${song.youTubeId}`}
+            target="_blank"
+            rel="noreferrer"
             >
-                {song.title}
+            {song.title}
             </a>
             <span className="song-card-year">({song.year})</span>
             <span className="song-card-artist">{song.artist}</span>
             <input
-                type="button"
-                className="song-card-button"
-                value="🗑"
-                onClick={() => deleteSongCallback(num)}
+            id="delete-button"
+            type="button"
+            className="song-card-button"
+            value="🗑"
+            onClick={() => deleteSongCallback(num)}
+            />
+            <input
+            type="button"
+            className="song-card-button"
+            value="+"
+            onClick={() => cloneSongCallback(num)}
             />
             </div>
         )

@@ -8,6 +8,7 @@ import { jsTPS } from 'jstps';
 // OUR TRANSACTIONS
 import MoveSong_Transaction from './transactions/MoveSong_Transaction.js';
 import DeleteSong_Transaction from './transactions/DeleteSong_Transaction.js';
+import CloneSong_Transaction from './transactions/CloneSong_Transaction.js';
 
 // THESE REACT COMPONENTS ARE MODALS
 import DeleteListModal from './components/DeleteListModal.jsx';
@@ -245,6 +246,20 @@ class App extends React.Component {
         let transaction = new DeleteSong_Transaction(this, index, songToDelete);
         this.tps.processTransaction(transaction);
     }
+    addCloneSongTransaction = (index) => {
+        // Grab the song we want to clone
+        const songToClone = this.state.currentList.songs[index - 1];
+
+        // Create a deep copy
+        const clonedSong = structuredClone(songToClone);
+        clonedSong.title = `${clonedSong.title} (Copy)`;
+        console.log("Cloned Song:", clonedSong);
+        // Insert clone *after* the original song
+        const insertIndex = index + 1;
+
+        let transaction = new CloneSong_Transaction(this, insertIndex, clonedSong);
+        this.tps.processTransaction(transaction);
+    }
     deleteSong = (index) => {
     this.state.currentList.songs.splice(index - 1, 1); 
     this.setStateWithUpdatedList(this.state.currentList);
@@ -355,6 +370,7 @@ class App extends React.Component {
                 moveSongCallback={this.addMoveSongTransaction}
                 openEditSongModal={this.openEditSongModal}
                 deleteSongCallback={this.addDeleteSongTransaction}
+                cloneSongCallback={this.addCloneSongTransaction}
                 />                
                 <Statusbar 
                     currentList={this.state.currentList} />
