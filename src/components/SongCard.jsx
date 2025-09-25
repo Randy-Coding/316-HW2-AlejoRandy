@@ -59,25 +59,41 @@ export default class SongCard extends React.Component {
     }
 
     render() {
-        const { song } = this.props;
+        const { song, deleteCallback } = this.props;
         let num = this.getItemNum();
-        console.log("num: " + num);
-        let itemClass = "song-card";
+        let itemClass = "song-card unselected-song-card";
         if (this.state.draggedTo) {
             itemClass = "song-card-dragged-to";
         }
+
         return (
             <div
-                id={'song-' + num}
-                className={itemClass}
-                onDragStart={this.handleDragStart}
-                onDragOver={this.handleDragOver}
-                onDragEnter={this.handleDragEnter}
-                onDragLeave={this.handleDragLeave}
-                onDrop={this.handleDrop}
-                draggable="true"
+            id={'song-' + num}
+            className={itemClass}
+            onDragStart={this.handleDragStart}
+            onDragOver={this.handleDragOver}
+            onDragEnter={this.handleDragEnter}
+            onDragLeave={this.handleDragLeave}
+            onDrop={this.handleDrop}
+            draggable="true"
             >
-                {song.title} by {song.artist}
+            <span className="song-card-number">{num}.</span>
+            <a
+                className="song-card-title"
+                href={`https://www.youtube.com/watch?v=${song.youTubeId}`}
+                target="_blank"
+                rel="noreferrer"
+            >
+                {song.title}
+            </a>
+            <span className="song-card-year">({song.year})</span>
+            <span className="song-card-artist">{song.artist}</span>
+            <input
+                type="button"
+                className="song-card-button"
+                value="🗑"
+                onClick={() => deleteCallback(num)}
+            />
             </div>
         )
     }
