@@ -7,6 +7,7 @@ import { jsTPS } from 'jstps';
 
 // OUR TRANSACTIONS
 import MoveSong_Transaction from './transactions/MoveSong_Transaction.js';
+import DeleteSong_Transaction from './transactions/DeleteSong_Transaction.js';
 
 // THESE REACT COMPONENTS ARE MODALS
 import DeleteListModal from './components/DeleteListModal.jsx';
@@ -239,10 +240,27 @@ class App extends React.Component {
         let transaction = new MoveSong_Transaction(this, start, end);
         this.tps.processTransaction(transaction);
     }
+    addDeleteSongTransaction = (index) => {
+        let songToDelete = this.state.currentList.songs[index - 1];
+        let transaction = new DeleteSong_Transaction(this, index, songToDelete);
+        this.tps.processTransaction(transaction);
+    }
     deleteSong = (index) => {
     this.state.currentList.songs.splice(index - 1, 1); 
     this.setStateWithUpdatedList(this.state.currentList);
     }
+    addSongAt = (index, song) => {
+        let list = this.state.currentList;
+        if (!list) return;
+
+        // Convert from 1-based index (transaction uses 1-based) to 0-based
+        const insertAt = Number(index) - 1;
+
+        // Insert song back at the original position
+        list.songs.splice(insertAt, 0, song);
+
+        this.setStateWithUpdatedList(list);
+    };
     // THIS FUNCTION BEGINS THE PROCESS OF PERFORMING AN UNDO
     undo = () => {
         if (this.tps.hasTransactionToUndo()) {
@@ -336,7 +354,7 @@ class App extends React.Component {
                 currentList={this.state.currentList}
                 moveSongCallback={this.addMoveSongTransaction}
                 openEditSongModal={this.openEditSongModal}
-                deleteSongCallback={this.deleteSong}
+                deleteSongCallback={this.addDeleteSongTransaction}
                 />                
                 <Statusbar 
                     currentList={this.state.currentList} />
