@@ -70,6 +70,7 @@ export default class SongCard extends React.Component {
             <div
             id={'song-' + num}
             className={itemClass}
+            onDoubleClick={this.props.onDoubleClick}
             onDragStart={this.handleDragStart}
             onDragOver={this.handleDragOver}
             onDragEnter={this.handleDragEnter}
