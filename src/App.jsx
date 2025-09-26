@@ -292,8 +292,7 @@ class App extends React.Component {
         const clonedSong = structuredClone(songToClone);
         clonedSong.title = `${clonedSong.title} (Copy)`;
         console.log("Cloned Song:", clonedSong);
-        // Insert clone *after* the original song
-        const insertIndex = index + 1;
+        const insertIndex = (parseInt(index, 10) + 1).toString();
 
         let transaction = new CreateSong_Transaction(this, insertIndex, clonedSong);
         this.tps.processTransaction(transaction);

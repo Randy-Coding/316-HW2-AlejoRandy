@@ -15,7 +15,8 @@ class CreateSong_Transaction extends jsTPS_Transaction {
     }
 
     executeUndo() {
-        this.app.deleteSong(this.songIndex + 1);
+        const list = this.app.state.currentList;
+        this.app.deleteSong(this.songIndex);
     }
 }
 
