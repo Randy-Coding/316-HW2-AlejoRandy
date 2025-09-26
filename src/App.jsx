@@ -392,18 +392,34 @@ class App extends React.Component {
     }
     // THIS FUNCTION SHOWS THE MODAL FOR PROMPTING THE USER
     // TO SEE IF THEY REALLY WANT TO DELETE THE LIST
-    showDeleteListModal() {
+    showDeleteListModal = () => {
         let modal = document.getElementById("delete-list-modal");
         modal.classList.add("is-visible");
+
+        // Disable toolbar buttons
+        document.getElementById("add-song-button").disabled = true;
+        document.getElementById("undo-button").disabled = true;
+        document.getElementById("redo-button").disabled = true;
+        document.getElementById("close-button").disabled = true;
     }
     // THIS FUNCTION IS FOR HIDING THE MODAL
-    hideDeleteListModal() {
+    hideDeleteListModal = () => {
         let modal = document.getElementById("delete-list-modal");
         modal.classList.remove("is-visible");
-    }
+
+        // Re-enable toolbar buttons
+        document.getElementById("add-song-button").disabled = false;
+        document.getElementById("undo-button").disabled = !this.tps.hasTransactionToUndo();
+        document.getElementById("redo-button").disabled = !this.tps.hasTransactionToDo();
+        document.getElementById("close-button").disabled = false;
+    };
 
     openEditSongModal = (index) => {
         const song = this.state.currentList.songs[index];
+        document.getElementById("add-song-button").disabled = true;
+        document.getElementById("undo-button").disabled = true;
+        document.getElementById("redo-button").disabled = true;
+        document.getElementById("close-button").disabled = true;
         this.setState({
             editSongIndex: index,
             editSongData: { title: song.title, artist: song.artist, youTubeId: song.youTubeId, year: song.year },
@@ -413,6 +429,10 @@ class App extends React.Component {
 
     closeEditSongModal = () => {
         this.setState({ isEditModalVisible: false });
+        document.getElementById("add-song-button").disabled = false;
+        document.getElementById("undo-button").disabled = !this.tps.hasTransactionToUndo();
+        document.getElementById("redo-button").disabled = !this.tps.hasTransactionToDo();
+        document.getElementById("close-button").disabled = false;
     }
 
     editSongAt(index, songData) {
@@ -437,6 +457,20 @@ class App extends React.Component {
 
     handleKeyDown = (event) => {
         // Check undo (Ctrl+Z or Cmd+Z)
+        const undoBtn = document.getElementById("undo-button");
+        const redoBtn = document.getElementById("redo-button");
+
+        if (undoBtn.disabled) {
+            console.log("The undo button is disabled!");
+        } else {
+            console.log("The undo button is enabled!");
+        }
+
+        if (redoBtn.disabled) {
+            console.log("The redo button is disabled!");
+        } else {
+            console.log("The redo button is enabled!");
+        }
         if ((event.ctrlKey || event.metaKey) && event.key === "z") {
             const undoBtn = document.getElementById("undo-button");
             if (undoBtn && !undoBtn.disabled && this.tps.hasTransactionToUndo()) {

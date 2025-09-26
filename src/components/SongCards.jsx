@@ -19,7 +19,11 @@ export default class SongCards extends React.Component {
                         key={'song-card-' + (index + 1)}
                         song={song}
                         moveCallback={moveSongCallback}
-                        onDoubleClick={() => openEditSongModal(index)}
+                        onDoubleClick={(event) => {
+                            if (event.target.tagName !== "INPUT" && event.target.type !== "button") {
+                            openEditSongModal(index);
+                            }
+                        }}
                         deleteSongCallback={deleteSongCallback}
                         cloneSongCallback={cloneSongCallback}
                         />
