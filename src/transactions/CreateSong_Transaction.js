@@ -2,7 +2,7 @@
 
 import { jsTPS_Transaction } from "jstps";
 
-class CloneSong_Transaction extends jsTPS_Transaction {
+class CreateSong_Transaction extends jsTPS_Transaction {
     constructor(initApp, initSongIndex, initSongClone) {
         super();
         this.app = initApp;
@@ -19,4 +19,4 @@ class CloneSong_Transaction extends jsTPS_Transaction {
     }
 }
 
-export default CloneSong_Transaction;
+export default CreateSong_Transaction;
