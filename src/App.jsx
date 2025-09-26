@@ -9,6 +9,7 @@ import { jsTPS } from 'jstps';
 import MoveSong_Transaction from './transactions/MoveSong_Transaction.js';
 import DeleteSong_Transaction from './transactions/DeleteSong_Transaction.js';
 import CreateSong_Transaction from './transactions/CreateSong_Transaction.js';
+import EditSong_Transaction from './transactions/EditSong_Transaction.js';
 
 // THESE REACT COMPONENTS ARE MODALS
 import DeleteListModal from './components/DeleteListModal.jsx';
@@ -391,13 +392,22 @@ class App extends React.Component {
         this.setState({ isEditModalVisible: false });
     }
 
-    confirmEditSongModal = () => {
+    editSongAt(index, songData) {
         let list = this.state.currentList;
+        if (!list) return;
+        if (index < 0 || index >= list.songs.length) return;
+        list.songs[index] = { ...songData };
+        this.setStateWithUpdatedList(list);
+    }
+
+    confirmEditSongModal = () => {
         let index = this.state.editSongIndex;
-        if (list && index !== null && index >= 0 && index < list.songs.length) {
-            list.songs[index] = { ...this.state.editSongData };
-            this.setStateWithUpdatedList(list);
-        }
+        let oldSongData = this.state.currentList.songs[index];
+        let newSongData = { ...this.state.editSongData };
+
+        let transaction = new EditSong_Transaction(this, index, oldSongData, newSongData);
+        this.tps.processTransaction(transaction);
+
         this.closeEditSongModal();
     }
     render() {
