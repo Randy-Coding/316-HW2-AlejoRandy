@@ -397,6 +397,7 @@ class App extends React.Component {
         modal.classList.add("is-visible");
 
         // Disable toolbar buttons
+        document.getElementById("add-list-button").disabled = true;
         document.getElementById("add-song-button").disabled = true;
         document.getElementById("undo-button").disabled = true;
         document.getElementById("redo-button").disabled = true;
@@ -408,6 +409,7 @@ class App extends React.Component {
         modal.classList.remove("is-visible");
 
         // Re-enable toolbar buttons
+        document.getElementById("add-list-button").disabled = false;
         document.getElementById("add-song-button").disabled = false;
         document.getElementById("undo-button").disabled = !this.tps.hasTransactionToUndo();
         document.getElementById("redo-button").disabled = !this.tps.hasTransactionToDo();
@@ -416,6 +418,7 @@ class App extends React.Component {
 
     openEditSongModal = (index) => {
         const song = this.state.currentList.songs[index];
+        document.getElementById("add-list-button").disabled = true;
         document.getElementById("add-song-button").disabled = true;
         document.getElementById("undo-button").disabled = true;
         document.getElementById("redo-button").disabled = true;
@@ -429,6 +432,7 @@ class App extends React.Component {
 
     closeEditSongModal = () => {
         this.setState({ isEditModalVisible: false });
+        document.getElementById("add-list-button").disabled = false;
         document.getElementById("add-song-button").disabled = false;
         document.getElementById("undo-button").disabled = !this.tps.hasTransactionToUndo();
         document.getElementById("redo-button").disabled = !this.tps.hasTransactionToDo();
@@ -494,11 +498,13 @@ class App extends React.Component {
         let canUndo = this.tps.hasTransactionToUndo();
         let canRedo = this.tps.hasTransactionToDo();
         let canClose = this.state.currentList !== null;
+        let canAddPlaylist = true;
         return (
             <div id="outer-root">
                 <Banner />
                 <SidebarHeading
                     createNewListCallback={this.createNewList}
+                    canAddPlaylist={canAddPlaylist}
                 />
                 <SidebarList
                     currentList={this.state.currentList}
