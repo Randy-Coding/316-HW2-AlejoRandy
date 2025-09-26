@@ -28,6 +28,12 @@ export default class PlaylistCard extends React.Component {
         event.stopPropagation();
         this.props.deleteListCallback(this.props.keyNamePair);
     }
+    handleCloneList = (event) => {
+        event.stopPropagation();
+        if (this.props.cloneListCallback) {
+            this.props.cloneListCallback(this.props.keyNamePair);
+        }
+    }
     handleToggleEdit = (event) => {
         this.setState({
             editActive: !this.state.editActive
@@ -88,6 +94,12 @@ export default class PlaylistCard extends React.Component {
                         className="card-button"
                         onClick={this.handleDeleteList}
                         value={"🗑"} />
+                    <input
+                        type="button"
+                        id={"add-item-" + keyNamePair.key}
+                        className="card-button"
+                        onClick={this.handleCloneList}
+                        value={"+"} />
                 </div>
             );
         }

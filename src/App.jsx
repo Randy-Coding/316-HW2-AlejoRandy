@@ -93,6 +93,43 @@ class App extends React.Component {
             this.db.mutationUpdateSessionData(this.state.sessionData);
         });
     }
+    // THIS FUNCTION CREATES A NEW LIST USING AN EXISTING LIST AS A TEMPLATE
+    createNewListFromTemplate = (templateList) => {
+        if (!templateList) return;
+
+        // generate new key and name
+        let newKey = this.state.sessionData.nextKey;
+        let newName = templateList.name + " (Copy)";
+
+        // deep copy the songs so the clone is independent
+        let copiedSongs = templateList.songs.map(song => structuredClone(song));
+
+        // build the new list
+        let newList = {
+            key: newKey,
+            name: newName,
+            songs: copiedSongs
+        };
+
+        // update session key-name pairs
+        let newKeyNamePair = { key: newKey, name: newName };
+        let updatedPairs = [...this.state.sessionData.keyNamePairs, newKeyNamePair];
+        this.sortKeyNamePairsByName(updatedPairs);
+
+        // update state and persist
+        this.setState(prevState => ({
+            listKeyPairMarkedForDeletion : prevState.listKeyPairMarkedForDeletion,
+            currentList: newList,
+            sessionData: {
+                nextKey: prevState.sessionData.nextKey + 1,
+                counter: prevState.sessionData.counter + 1,
+                keyNamePairs: updatedPairs
+            }
+        }), () => {
+            this.db.mutationCreateList(newList);
+            this.db.mutationUpdateSessionData(this.state.sessionData);
+        });
+    }
     // THIS FUNCTION BEGINS THE PROCESS OF DELETING A LIST.
     deleteList = (key) => {
         // IF IT IS THE CURRENT LIST, CHANGE THAT
@@ -294,6 +331,20 @@ class App extends React.Component {
             this.db.mutationUpdateList(this.state.currentList);
         }
     }
+    cloneList = (keyNamePair) => {
+        // Find the key-name pair
+        let originalPair = this.state.sessionData.keyNamePairs.find(
+            pair => pair.key === keyNamePair.key
+        );
+        if (!originalPair) return;
+
+        // Load the full list object from DB
+        let list = this.db.queryGetList(originalPair.key);
+        if (!list) return;
+
+        // Reuse your template method
+        this.createNewListFromTemplate(list);
+    };
     markListForDeletion = (keyPair) => {
         this.setState(prevState => ({
             currentList: prevState.currentList,
@@ -353,6 +404,7 @@ class App extends React.Component {
                     currentList={this.state.currentList}
                     keyNamePairs={this.state.sessionData.keyNamePairs}
                     deleteListCallback={this.markListForDeletion}
+                    cloneListCallback={this.cloneList}
                     loadListCallback={this.loadList}
                     renameListCallback={this.renameList}
                 />
