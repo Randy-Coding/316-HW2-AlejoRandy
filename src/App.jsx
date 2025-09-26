@@ -46,6 +46,29 @@ class App extends React.Component {
             editSongData: { title: "", artist: "", youTubeId: "", year: "" }
         }
     }
+    componentDidMount() {
+        // Make a copy of the keyNamePairs
+        let sortedPairs = [...this.state.sessionData.keyNamePairs];
+
+        // Sort them in place
+        this.sortKeyNamePairsByName(sortedPairs);
+
+        // Update state with the sorted pairs
+        this.setState(prevState => ({
+            ...prevState,
+            sessionData: {
+                ...prevState.sessionData,
+                keyNamePairs: sortedPairs
+            }
+        }));
+
+
+        window.addEventListener("keydown", this.handleKeyDown);
+    }
+
+    componentWillUnmount() {
+        window.removeEventListener("keydown", this.handleKeyDown);
+    }
     sortKeyNamePairsByName = (keyNamePairs) => {
         keyNamePairs.sort((keyPair1, keyPair2) => {
             // GET THE LISTS
@@ -324,6 +347,7 @@ class App extends React.Component {
 
         this.setStateWithUpdatedList(list);
     };
+
     // THIS FUNCTION BEGINS THE PROCESS OF PERFORMING AN UNDO
     undo = () => {
         if (this.tps.hasTransactionToUndo()) {
@@ -409,6 +433,28 @@ class App extends React.Component {
 
         this.closeEditSongModal();
     }
+
+
+    handleKeyDown = (event) => {
+        // Check undo (Ctrl+Z or Cmd+Z)
+        if ((event.ctrlKey || event.metaKey) && event.key === "z") {
+            const undoBtn = document.getElementById("undo-button");
+            if (undoBtn && !undoBtn.disabled && this.tps.hasTransactionToUndo()) {
+                this.undo();
+                event.preventDefault();
+            }
+        }
+
+        // Check redo (Ctrl+Y or Cmd+Y)
+        if ((event.ctrlKey || event.metaKey) && event.key === "y") {
+            const redoBtn = document.getElementById("redo-button");
+            if (redoBtn && !redoBtn.disabled && this.tps.hasTransactionToDo()) {
+                this.redo();
+                event.preventDefault();
+            }
+        }
+    };
+
     render() {
         let canAddSong = this.state.currentList !== null;
         let canUndo = this.tps.hasTransactionToUndo();
