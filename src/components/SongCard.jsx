@@ -10,7 +10,7 @@ export default class SongCard extends React.Component {
         }
     }
     handleDragStart = (event) => {
-        event.dataTransfer.setData("song", event.target.id);
+        event.dataTransfer.setData("song", event.currentTarget.id);
         this.setState(prevState => ({
             isDragging: true,
             draggedTo: prevState.draggedTo
@@ -39,9 +39,11 @@ export default class SongCard extends React.Component {
     }
     handleDrop = (event) => {
         event.preventDefault();
-        let target = event.target;
-        let targetId = target.id;
-        targetId = targetId.substring(target.id.indexOf("-") + 1);
+        const cardId = event.currentTarget.id;
+        if (!cardId || !cardId.startsWith("song")) {
+            return;
+        }
+        let targetId = cardId.substring(cardId.indexOf("-") + 1);
         let sourceId = event.dataTransfer.getData("song");
         sourceId = sourceId.substring(sourceId.indexOf("-") + 1);
         
@@ -50,7 +52,6 @@ export default class SongCard extends React.Component {
             draggedTo: false
         }));
 
-        // ASK THE MODEL TO MOVE THE DATA
         this.props.moveCallback(sourceId, targetId);
     }
 
@@ -65,7 +66,6 @@ export default class SongCard extends React.Component {
         if (this.state.draggedTo) {
             itemClass = "song-card-dragged-to";
         }
-
         return (
             <div
             id={'song-' + num}
